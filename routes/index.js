@@ -3,9 +3,11 @@
 // let cheerio = require('cheerio');
 // const router = express.Router();
 const table = require('./table');
+const fileUpload = require('./fileUpload');
 
 module.exports = app => {
-	app.post('/table-list', table)
+	app.post('/table-list', table);
+	app.post('/upload', fileUpload)
 };
 
 // /* GET home page. */
