@@ -9,14 +9,14 @@ class Employer extends Model {
 
 Employer.init({
 	id: {
-		type: Sequelize.STRING,
+		type: Sequelize.STRING(36),
 		primaryKey: true,
 	},
 	name: {
 		type: Sequelize.STRING
 	},
 	age: {
-		type: Sequelize.STRING
+		type: Sequelize.STRING(3)
 	},
 	address: {
 		type: Sequelize.STRING
