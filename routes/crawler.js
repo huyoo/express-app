@@ -2,17 +2,21 @@
  * 爬取页面
  * create by hy ON 2020/5/23
  */
-let superagent = require('superagent');
-let cheerio = require('cheerio');
-const {responseClient} = require('../util');
+const superagent = require('superagent');
+const cheerio = require('cheerio');
+const uuid = require('node-uuid');
+const moment = require('moment');
 
-const PATH = ['http://www.hanpig.com/', 'http://www.skie.com.cn/']
+const {responseClient} = require('../util');
+const HanPigsDao = require('../daos/HanPigsDao');
+
+const PATH = ['https://wuhuashe.com/pingdao/zuoping/page/2', 'http://www.skie.com.cn/']
 
 module.exports = (req, res) => {
 	// res.render('index', { title: 'Express' });
 
 	// 用 superagent 去抓取 https://cnodejs.org/ 的内容
-	superagent.get(PATH[1])
+	superagent.get(PATH[0])
 			.end((err, result) => {
 				// 常规的错误处理
 				if (err) {
@@ -24,16 +28,31 @@ module.exports = (req, res) => {
 				// 剩下就都是 jquery 的内容了
 				let $ = cheerio.load(result.text);
 				let items = [];
-				$('.article-list .item').each(function (idx, element) {
-					let $element = $(element);
 
-					items.push({
-						index: idx + 1,
-						img: $element.find('img').attr('data-original'),
-						title: $element.find('.item-title a').attr('href'),
-						href: $element.find('.item-title a').attr('title'),
+				try {
+					$('section article').each(function (idx, element) {
+						let $element = $(element);
+
+						items.push({
+							id: uuid.v1(),
+							// img: $element.find('header h2 a').attr(''),
+							title: $element.find('header h2 a').attr('href'),
+							href: $element.find('header h2 a').attr('title'),
+							createdDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+						});
 					});
-				});
-				return responseClient(res, 200, 3, '请求成功', items)
+				} catch (e) {
+					return responseClient(res, 500, false, '解析失败', {success: false, message: e})
+
+				}
+
+
+				HanPigsDao.bulkAdd(items)
+						.then(() => {
+							return responseClient(res, 200, true, '解析成功', {success: true})
+						})
+						.catch((err) => {
+							return responseClient(res, 500, false, '解析失败', {success: false, message: err})
+						})
 			});
 };

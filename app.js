@@ -6,6 +6,7 @@ const lessMiddleware = require('less-middleware');
 const logger = require('morgan');
 
 const routes = require('./routes/index');
+const home = require('./routes/home');
 
 const app = express();
 
@@ -20,7 +21,11 @@ app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-routes(app);
+
+app.get('/', home);
+routes.forEach(route => {
+	app[route.type](route.path, route.handler);
+})
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
