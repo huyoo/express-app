@@ -7,6 +7,8 @@ const table = require('./table');
 const fileUpload = require('./fileUpload');
 const crawler = require('./crawler');
 const addEmployer = require('./addEmployer');
+const crawlerContent = require('./crawlerContent');
+const showItem = require('./showItem');
 
 
 module.exports = [
@@ -21,6 +23,14 @@ module.exports = [
 	}, {
 		path: '/crawler',
 		handler: crawler,
+		type: 'get'
+	}, {
+		path: '/crawler-item',
+		handler: crawlerContent,
+		type: 'get'
+	}, {
+		path: '/show-item',
+		handler: showItem,
 		type: 'get'
 	}, {
 		path: '/add-employer',
