@@ -20,7 +20,7 @@
     "mockjs": "^1.1.0",
     "multiparty": "^4.2.1",
     "node-uuid": "^1.4.8",
-    "moment": "^2.27.0"
+    "moment": "^2.29.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
